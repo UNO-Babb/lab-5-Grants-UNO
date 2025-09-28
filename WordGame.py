@@ -4,11 +4,18 @@ import random
 
 def inWord(letter, word):
     """Returns boolean if letter is anywhere in the given word"""
+    for ch in word:
+        if letter == ch:
+            return True
 
     return False
 
 def inSpot(letter, word, spot):
     """Returns boolean response if letter is in the given spot in the word."""
+    correctLetter = word[spot]
+    if letter == correctLetter:
+        return True
+
 
     return False
 
@@ -17,6 +24,18 @@ def rateGuess(myGuess, word):
     - Capital letter if the letter is in the right spot
     - Lower case letter if the letter is in the word but in the wrong spot
     - * if the letter is not in the word at all"""
+    feedback = ""
+
+    for spot in range(5):
+        myLetter = myGuess[spot]
+        if inSpot(myLetter, word, spot) == True:
+            feedback = feedback + myLetter.upper()
+        elif inWord(myLetter, word) == True:
+            feedback = feedback +myLetter.lower()
+        else:
+            feedback = feedback + "*"
+    
+    return feedback
 
 
 def main():
@@ -25,16 +44,34 @@ def main():
     content = wordFile.read()
     wordList = content.split("\n")
     todayWord = random.choice(wordList)
-    print(todayWord)
+    #print(todayWord)
 
     #User should get 6 guesses to guess
+    guessNum = 1
+    while guessNum < 6:
+        validWord = False
+        while validWord == False:
+            #Ask user for their guess
+            guess = input("Enter a guess: ")
+            guess = guess.lower()
+            if guess not in wordList:
+                print("Guess not in word list.")
+                validword = False
+            else:
+                validword = True
+        feedback = rateGuess(guess, todayWord)
+        print(feedback)
+        if feedback == todayWord.upper():
+            print("You got it in ", guessNum, "tries.")
+            break
+        #Give feedback using on their word:
 
-    #Ask user for their guess
-    #Give feedback using on their word:
+        guessNum = guessNum + 1
+    rateGuess()
 
 
-
-
+    print("The word was ", todayWord)
+    print("Thank you for playing.")
 
 if __name__ == '__main__':
   main()
